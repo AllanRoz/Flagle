@@ -1,6 +1,6 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Button from '../common/Button';
-import { CheckCircle2, XCircle, ArrowRight, Edit3, Flag } from 'lucide-react';
+import { CheckCircle2, XCircle, ArrowRight, Edit3, Clock } from 'lucide-react';
 
 export default function AnswerFeedback({
   status, // 'correct' | 'spelling_corrected' | 'incorrect'
@@ -9,22 +9,65 @@ export default function AnswerFeedback({
   onNextQuestion,
   isLastQuestion,
   onFinishGame,
+  autoAdvance = true,
+  autoAdvanceDuration = 5000,
 }) {
-  // Listen for Enter or Space to quickly advance
+  const [progress, setProgress] = useState(100);
+  const [timeLeft, setTimeLeft] = useState(Math.ceil(autoAdvanceDuration / 1000));
+  const intervalRef = useRef(null);
+  const startTimeRef = useRef(Date.now());
+
+  const handleAdvance = () => {
+    if (intervalRef.current) clearInterval(intervalRef.current);
+    if (isLastQuestion && onFinishGame) {
+      onFinishGame();
+    } else if (onNextQuestion) {
+      onNextQuestion();
+    }
+  };
+
+  // Keyboard shortcut listener (Space or Enter to skip timer and advance immediately)
   useEffect(() => {
     const handleKeyDown = (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        if (isLastQuestion && onFinishGame) {
-          onFinishGame();
-        } else {
-          onNextQuestion();
-        }
+        handleAdvance();
       }
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
   }, [onNextQuestion, isLastQuestion, onFinishGame]);
+
+  // Auto-advance timer with smooth countdown bar
+  useEffect(() => {
+    if (!autoAdvance) return;
+
+    startTimeRef.current = Date.now();
+    setProgress(100);
+    setTimeLeft(Math.ceil(autoAdvanceDuration / 1000));
+
+    const updateInterval = 40; // 25fps smooth update
+    intervalRef.current = setInterval(() => {
+      const elapsed = Date.now() - startTimeRef.current;
+      const remainingMs = Math.max(0, autoAdvanceDuration - elapsed);
+      const newProgress = Math.max(0, (remainingMs / autoAdvanceDuration) * 100);
+      setProgress(newProgress);
+      setTimeLeft(Math.max(1, Math.ceil(remainingMs / 1000)));
+
+      if (remainingMs <= 0) {
+        clearInterval(intervalRef.current);
+        if (isLastQuestion && onFinishGame) {
+          onFinishGame();
+        } else if (onNextQuestion) {
+          onNextQuestion();
+        }
+      }
+    }, updateInterval);
+
+    return () => {
+      if (intervalRef.current) clearInterval(intervalRef.current);
+    };
+  }, [country?.code, status, autoAdvance, autoAdvanceDuration, isLastQuestion, onNextQuestion, onFinishGame]);
 
   if (!status || !country) return null;
 
@@ -33,17 +76,20 @@ export default function AnswerFeedback({
   const isIncorrect = status === 'incorrect';
 
   let bannerStyle = 'bg-emerald-500/10 border-emerald-500/40 text-emerald-900 dark:text-emerald-200';
+  let progressBarColor = 'bg-emerald-500';
   let title = 'Correct!';
   let Icon = CheckCircle2;
   let iconColor = 'text-emerald-500';
 
   if (isSpelling) {
     bannerStyle = 'bg-amber-500/10 border-amber-500/40 text-amber-900 dark:text-amber-200';
+    progressBarColor = 'bg-amber-500';
     title = 'Correct (Spelling Mistake)';
     Icon = Edit3;
     iconColor = 'text-amber-500';
   } else if (isIncorrect) {
     bannerStyle = 'bg-rose-500/10 border-rose-500/40 text-rose-900 dark:text-rose-200';
+    progressBarColor = 'bg-rose-500';
     title = 'Incorrect!';
     Icon = XCircle;
     iconColor = 'text-rose-500';
@@ -68,16 +114,35 @@ export default function AnswerFeedback({
         </div>
       </div>
 
+      {/* Auto-advance Countdown Bar */}
+      {autoAdvance && (
+        <div className="w-full space-y-1.5 pt-1">
+          <div className="flex items-center justify-between text-[11px] font-semibold opacity-80">
+            <span className="inline-flex items-center gap-1.5">
+              <Clock className="w-3.5 h-3.5 text-current animate-pulse" />
+              <span>Next question in {timeLeft}s</span>
+            </span>
+            <span className="hidden sm:inline">Press Space or Enter to skip</span>
+          </div>
+          <div className="w-full h-1.5 bg-black/10 dark:bg-white/10 rounded-full overflow-hidden">
+            <div
+              className={`h-full ${progressBarColor} transition-all duration-75 ease-linear rounded-full shadow-sm`}
+              style={{ width: `${progress}%` }}
+            />
+          </div>
+        </div>
+      )}
+
       <div className="flex items-center justify-between pt-1 border-t border-current/10">
         <span className="text-xs opacity-75 font-medium hidden sm:inline">
-          Press Space or Enter for next
+          {autoAdvance ? 'Auto-advancing' : 'Press Space or Enter for next'}
         </span>
 
         <Button
           variant={isIncorrect ? 'rose' : isSpelling ? 'amber' : 'emerald'}
           size="md"
           className="w-full sm:w-auto ml-auto px-6 py-2.5 font-bold text-sm sm:text-base shadow-md"
-          onClick={isLastQuestion && onFinishGame ? onFinishGame : onNextQuestion}
+          onClick={handleAdvance}
           icon={ArrowRight}
           iconPosition="right"
         >

@@ -273,6 +273,8 @@ export default function Game() {
           onNextQuestion={handleNextQuestion}
           isLastQuestion={isLastQuestion}
           onFinishGame={handleFinishGame}
+          autoAdvance={gameMode === 'multiple-choice'}
+          autoAdvanceDuration={5000}
         />
       )}
 
