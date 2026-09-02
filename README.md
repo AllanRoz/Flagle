@@ -5,7 +5,9 @@
 Built with **React**, **Vite**, and **Tailwind CSS**, FlagGuess requires **zero backend**, **zero API keys**, and is designed for seamless deployment to **GitHub Pages**.
 
 <p align="center">
-  <img src="public/flag_guess.png" alt="FlagGuess Game Preview" width="850">
+  <a href="https://github.allanrozario.com/World-Flag-Guessing-Game/">
+    <img src="public/flag_guess.png" alt="FlagGuess Game Preview" width="850">
+  </a>
 </p>
 
 ---
