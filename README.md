@@ -5,7 +5,7 @@
 Built with **React**, **Vite**, and **Tailwind CSS**, Flagle requires **zero backend**, **zero API keys**, and is designed for seamless deployment to **GitHub Pages**.
 
 <p align="center">
-  <a href="https://github.allanrozario.com/World-Flag-Guessing-Game/">
+  <a href="https://github.allanrozario.com/Flagle/">
     <img src="public/flagle.png" alt="Flagle Game Preview" width="850">
   </a>
 </p>
