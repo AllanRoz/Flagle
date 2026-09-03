@@ -1,4 +1,4 @@
-# Flagle 🌎 — World Flag Guessing Game
+# Flagle 🌎
 
 **Flagle** is a modern, responsive, 100% client-side web game where players guess world flags from progressively revealed pieces or test their knowledge across multiple quiz modes.
 
