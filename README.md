@@ -6,7 +6,7 @@ Built with **React**, **Vite**, and **Tailwind CSS**, Flagle requires **zero bac
 
 <p align="center">
   <a href="https://github.allanrozario.com/World-Flag-Guessing-Game/">
-    <img src="public/flag_guess.png" alt="Flagle Game Preview" width="850">
+    <img src="public/flagle_preview.png" alt="Flagle Game Preview" width="850">
   </a>
 </p>
 
