@@ -13,13 +13,17 @@ import { SoundEngine } from '../utils/sound';
 import { fireStreakConfetti } from '../utils/confetti';
 
 import FlagCard from '../components/game/FlagCard';
+import FlagTileCard from '../components/game/FlagTileCard';
 import QuestionHeader from '../components/game/QuestionHeader';
 import MultipleChoice from '../components/game/MultipleChoice';
 import TypedAnswer from '../components/game/TypedAnswer';
+import FlagleMode from '../components/game/FlagleMode';
 import SpellingModal from '../components/game/SpellingModal';
 import AnswerFeedback from '../components/game/AnswerFeedback';
 import Modal from '../components/common/Modal';
 import Button from '../components/common/Button';
+import { getCountryComparison } from '../data/countryCoordinates';
+import { findCountryByInput } from '../utils/countryMatching';
 import { AlertTriangle, Home } from 'lucide-react';
 
 export default function Game() {
@@ -53,6 +57,10 @@ export default function Game() {
   const [answerStatus, setAnswerStatus] = useState(null); // 'correct' | 'spelling_corrected' | 'incorrect' | null
   const [userGuessText, setUserGuessText] = useState('');
 
+  // Flagle progressive reveal state
+  const [revealedTiles, setRevealedTiles] = useState([0]);
+  const [flagleAttempts, setFlagleAttempts] = useState([]);
+
   // Scores and streak
   const [correctCount, setCorrectCount] = useState(0);
   const [spellingCount, setSpellingCount] = useState(0);
@@ -71,7 +79,7 @@ export default function Game() {
   // Leave game modal state
   const [isLeaveModalOpen, setIsLeaveModalOpen] = useState(false);
 
-  // Generate options when currentCountry changes for Multiple Choice
+  // Generate options when currentCountry changes for Multiple Choice or reset Flagle
   useEffect(() => {
     if (gameMode === 'multiple-choice' && currentCountry) {
       const options = generateMultipleChoiceOptions(currentCountry, countryPool, COUNTRIES);
@@ -81,6 +89,8 @@ export default function Game() {
     setSelectedOption(null);
     setAnswerStatus(null);
     setUserGuessText('');
+    setRevealedTiles([0]);
+    setFlagleAttempts([]);
   }, [currentIndex, currentCountry, gameMode, countryPool]);
 
   // Check if this is the final question of a fixed game
@@ -105,7 +115,7 @@ export default function Game() {
 
   // Finalize answer and record history
   const finalizeAnswer = useCallback(
-    (status, userGuess) => {
+    (status, userGuess, extraData = {}) => {
       setIsAnswered(true);
       setAnswerStatus(status);
       setUserGuessText(userGuess);
@@ -115,6 +125,7 @@ export default function Game() {
         userGuess: userGuess,
         status: status,
         questionIndex: currentIndex,
+        ...extraData,
       };
 
       setHistory((prev) => [...prev, recordItem]);
@@ -135,6 +146,88 @@ export default function Game() {
     },
     [currentCountry, currentIndex, updateStreak]
   );
+
+  // Flagle Guess Submit
+  const handleFlagleGuess = (countryOrInput) => {
+    if (isAnswered) return;
+
+    const guessedCountry = findCountryByInput(countryOrInput, COUNTRIES);
+    const guessName = guessedCountry
+      ? guessedCountry.name
+      : typeof countryOrInput === 'string'
+      ? countryOrInput
+      : '';
+
+    const isCorrect = guessedCountry ? guessedCountry.code === currentCountry.code : false;
+    const comparison = guessedCountry ? getCountryComparison(guessedCountry, currentCountry) : null;
+
+    const newAttempt = {
+      country: guessedCountry,
+      guessText: guessName,
+      isCorrect,
+      skipped: false,
+      distanceKm: comparison ? comparison.distanceKm : null,
+      direction: comparison ? comparison.direction : null,
+      sameContinent: comparison ? comparison.sameContinent : false,
+      guessedContinent: guessedCountry ? guessedCountry.continent : null,
+      targetContinent: currentCountry.continent,
+    };
+
+    const nextAttempts = [...flagleAttempts, newAttempt];
+    setFlagleAttempts(nextAttempts);
+
+    if (isCorrect) {
+      setRevealedTiles([0, 1, 2, 3, 4, 5]);
+      finalizeAnswer('correct', guessName, {
+        revealsUsed: revealedTiles.length,
+        attemptsCount: nextAttempts.length,
+      });
+    } else {
+      // Reveal next tile if available
+      let nextTiles = [...revealedTiles];
+      if (nextTiles.length < 6) {
+        nextTiles = Array.from({ length: nextTiles.length + 1 }, (_, i) => i);
+        setRevealedTiles(nextTiles);
+      }
+
+      if (nextAttempts.length >= 6) {
+        setRevealedTiles([0, 1, 2, 3, 4, 5]);
+        finalizeAnswer('incorrect', guessName, {
+          revealsUsed: 6,
+          attemptsCount: 6,
+        });
+      } else {
+        SoundEngine.playIncorrect();
+      }
+    }
+  };
+
+  // Flagle Skip / Reveal Piece
+  const handleFlagleSkip = () => {
+    if (isAnswered || revealedTiles.length >= 6) return;
+
+    SoundEngine.playClick();
+    const nextTiles = Array.from({ length: revealedTiles.length + 1 }, (_, i) => i);
+    setRevealedTiles(nextTiles);
+
+    const skipAttempt = {
+      skipped: true,
+      country: null,
+      guessText: 'Skipped',
+      isCorrect: false,
+    };
+
+    const nextAttempts = [...flagleAttempts, skipAttempt];
+    setFlagleAttempts(nextAttempts);
+
+    if (nextAttempts.length >= 6) {
+      setRevealedTiles([0, 1, 2, 3, 4, 5]);
+      finalizeAnswer('incorrect', 'Skipped', {
+        revealsUsed: 6,
+        attemptsCount: 6,
+      });
+    }
+  };
 
   // Multiple Choice option clicked
   const handleSelectMultipleChoice = (option) => {
@@ -237,18 +330,39 @@ export default function Game() {
         gameMode={gameMode}
       />
 
-      {/* Flag Display Card */}
-      <FlagCard country={currentCountry} />
+      {/* Flag Display Card (Tile Card for Flagle, standard card for others) */}
+      {gameMode === 'flagle' ? (
+        <FlagTileCard
+          country={currentCountry}
+          revealedIndices={revealedTiles}
+          isFullyRevealed={isAnswered}
+        />
+      ) : (
+        <FlagCard country={currentCountry} />
+      )}
 
       {/* Question Prompt */}
       <div className="text-center">
         <h3 className="text-base sm:text-lg font-bold text-slate-700 dark:text-slate-200">
-          Which country does this flag belong to?
+          {gameMode === 'flagle'
+            ? 'Guess the country from the revealed pieces of its flag!'
+            : 'Which country does this flag belong to?'}
         </h3>
       </div>
 
       {/* Game Mode Interaction */}
-      {gameMode === 'multiple-choice' ? (
+      {gameMode === 'flagle' ? (
+        <FlagleMode
+          targetCountry={currentCountry}
+          allCountries={COUNTRIES}
+          attempts={flagleAttempts}
+          maxAttempts={6}
+          isAnswered={isAnswered}
+          onGuessSubmit={handleFlagleGuess}
+          onSkipReveal={handleFlagleSkip}
+          revealedCount={revealedTiles.length}
+        />
+      ) : gameMode === 'multiple-choice' ? (
         <MultipleChoice
           options={mcOptions}
           correctCountry={currentCountry}

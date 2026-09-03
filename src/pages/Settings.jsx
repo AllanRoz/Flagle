@@ -60,7 +60,7 @@ export default function Settings({ darkMode, setDarkMode }) {
           <span>Game Settings</span>
         </h2>
         <p className="text-sm text-slate-500 dark:text-slate-400 font-medium mt-0.5">
-          Customize your FlagGuess sound, visuals, and gameplay preferences
+          Customize your Flagle sound, visuals, and gameplay preferences
         </p>
       </div>
 
@@ -199,11 +199,11 @@ export default function Settings({ darkMode, setDarkMode }) {
       <Card className="space-y-3 bg-slate-50/80 dark:bg-slate-900/50">
         <h4 className="font-extrabold text-sm text-slate-900 dark:text-white flex items-center gap-2">
           <Info className="w-4 h-4 text-brand-500" />
-          <span>About FlagGuess</span>
+          <span>About Flagle</span>
         </h4>
         <p className="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">
-          FlagGuess is a 100% client-side web application built with React, Vite, and Tailwind CSS.
-          Designed for seamless offline caching, zero external API keys, and deployment to GitHub Pages.
+          Flagle is a 100% client-side web application built with React, Vite, and Tailwind CSS.
+          Features progressive tile reveal gameplay, smart typo detection, and offline-first persistence.
         </p>
         <div className="flex flex-wrap gap-2 pt-1 text-[11px] font-semibold text-slate-400 dark:text-slate-500">
           <span className="px-2 py-0.5 rounded-md bg-slate-200 dark:bg-slate-800">240+ Countries</span>

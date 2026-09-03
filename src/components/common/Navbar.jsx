@@ -26,10 +26,10 @@ export default function Navbar({ darkMode, setDarkMode }) {
           </div>
           <div className="flex flex-col">
             <span className="font-extrabold text-lg sm:text-xl tracking-tight bg-gradient-to-r from-brand-600 via-brand-500 to-indigo-600 dark:from-brand-400 dark:to-cyan-300 bg-clip-text text-transparent leading-none">
-              FlagGuess
+              Flagle
             </span>
             <span className="text-[10px] font-semibold text-slate-400 dark:text-slate-500 tracking-wider uppercase">
-              World Quiz
+              Flag Quiz
             </span>
           </div>
         </Link>

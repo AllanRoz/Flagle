@@ -1,12 +1,12 @@
-# FlagGuess 🌎 — World Flag Guessing Game
+# Flagle 🌎 — World Flag Guessing Game
 
-**FlagGuess** is a modern, responsive, 100% client-side web game where players test their knowledge of world flags across all 6 continents.
+**Flagle** is a modern, responsive, 100% client-side web game where players guess world flags from progressively revealed pieces or test their knowledge across multiple quiz modes.
 
-Built with **React**, **Vite**, and **Tailwind CSS**, FlagGuess requires **zero backend**, **zero API keys**, and is designed for seamless deployment to **GitHub Pages**.
+Built with **React**, **Vite**, and **Tailwind CSS**, Flagle requires **zero backend**, **zero API keys**, and is designed for seamless deployment to **GitHub Pages**.
 
 <p align="center">
   <a href="https://github.allanrozario.com/World-Flag-Guessing-Game/">
-    <img src="public/flag_guess.png" alt="FlagGuess Game Preview" width="850">
+    <img src="public/flag_guess.png" alt="Flagle Game Preview" width="850">
   </a>
 </p>
 
@@ -14,6 +14,7 @@ Built with **React**, **Vite**, and **Tailwind CSS**, FlagGuess requires **zero 
 
 ## 🌟 Key Features
 
+* **🧩 Flagle Progressive Reveal Mode**: Guess the secret world flag from progressively revealed pieces of a 6-tile grid! Make guesses to unlock more slices, with smart country autocomplete, geographic distance in kilometers, compass bearing arrows (e.g. `↗️ NE`), and continent clues.
 * **🎴 Multiple Choice Mode**: Fast-paced quiz with 4 randomized answer options, real-time feedback, and keyboard shortcut support (`1`, `2`, `3`, `4`).
 * **⌨️ Type the Country Mode**: Type the country name directly.
 * **🧠 Smart Fuzzy Spelling Assistant**: If you mistype a country name (e.g. `Jpan` → Japan, `Untied States` → United States, `Frnace` → France), the game asks: *"Did you mean [Country]?"* Confirming counts as a correct answer with a spelling correction!

@@ -139,6 +139,11 @@ export default function ReviewGrid({ history = [] }) {
                     Your guess: <span className="font-semibold text-slate-600 dark:text-slate-300">{userGuess}</span>
                   </p>
                 )}
+                {item.revealsUsed && (
+                  <p className="text-[10px] font-bold text-brand-600 dark:text-brand-400 truncate mt-0.5">
+                    🧩 {item.revealsUsed}/6 tiles revealed
+                  </p>
+                )}
               </div>
             </div>
           );

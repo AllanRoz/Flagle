@@ -16,7 +16,7 @@ const DEFAULT_SETTINGS = {
 };
 
 const DEFAULT_SETUP = {
-  gameMode: 'multiple-choice',
+  gameMode: 'flagle',
   continents: ['world'],
   questionCount: 10,
 };
@@ -29,6 +29,7 @@ const DEFAULT_STATS = {
   totalIncorrect: 0,
   highestStreak: 0,
   gameModeCount: {
+    'flagle': 0,
     'multiple-choice': 0,
     'typed': 0,
   },

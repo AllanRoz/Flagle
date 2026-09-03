@@ -12,6 +12,13 @@ import {
   generateMultipleChoiceOptions,
   calculateAccuracy,
 } from '../src/utils/gameLogic.js';
+import { findCountryByInput } from '../src/utils/countryMatching.js';
+import {
+  calculateDistanceKm,
+  calculateCompassBearing,
+  getCountryComparison,
+  getCountryCoordinates,
+} from '../src/data/countryCoordinates.js';
 
 let passed = 0;
 let failed = 0;
@@ -110,6 +117,34 @@ console.log('\n--- 6. Accuracy Calculation ---');
 assert(calculateAccuracy(8, 10) === 80, '8/10 = 80%');
 assert(calculateAccuracy(10, 10) === 100, '10/10 = 100%');
 assert(calculateAccuracy(0, 10) === 0, '0/10 = 0%');
+
+console.log('\n--- 7. Testing Flagle Geographic & Coordinate Calculations ---');
+const distParisBerlin = calculateDistanceKm(46.2276, 2.2137, 51.1657, 10.4515);
+assert(distParisBerlin > 700 && distParisBerlin < 1000, `Paris to Berlin distance is reasonable: ${distParisBerlin} km`);
+
+const bearingNorth = calculateCompassBearing(0, 0, 10, 0);
+assert(bearingNorth.arrow === '⬆️' && bearingNorth.label === 'N', 'Direction North gives ⬆️ N');
+
+const bearingEast = calculateCompassBearing(0, 0, 0, 10);
+assert(bearingEast.arrow === '➡️' && bearingEast.label === 'E', 'Direction East gives ➡️ E');
+
+const compFranceJapan = getCountryComparison(france, japan);
+assert(compFranceJapan.sameContinent === false, 'France and Japan are different continents');
+assert(compFranceJapan.distanceKm > 8000, 'France to Japan distance > 8000 km');
+assert(compFranceJapan.direction.arrow.length > 0, 'Compass arrow returned');
+
+const compFranceGermany = getCountryComparison(france, COUNTRIES.find((c) => c.code === 'DE'));
+assert(compFranceGermany.sameContinent === true, 'France and Germany are same continent (Europe)');
+
+console.log('\n--- 8. Testing findCountryByInput Helper ---');
+const foundUSA = findCountryByInput('USA', COUNTRIES);
+assert(foundUSA && foundUSA.code === 'US', 'findCountryByInput("USA") resolves to US');
+
+const foundGermany = findCountryByInput('Deutschland', COUNTRIES);
+assert(foundGermany && foundGermany.code === 'DE', 'findCountryByInput("Deutschland") alias resolves to DE');
+
+const foundTypo = findCountryByInput('Frnace', COUNTRIES);
+assert(foundTypo && foundTypo.code === 'FR', 'findCountryByInput("Frnace") typo resolves to France');
 
 console.log(`\n=============================`);
 console.log(`TEST SUMMARY: ${passed} passed, ${failed} failed`);

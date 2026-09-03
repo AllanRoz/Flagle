@@ -71,30 +71,63 @@ export default function GameSetup() {
         <label className="block text-xs sm:text-sm font-extrabold uppercase tracking-wider text-slate-600 dark:text-slate-300">
           1. Select Game Mode
         </label>
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          {/* Flagle Progressive Reveal Card */}
+          <div
+            onClick={() => {
+              SoundEngine.playClick();
+              setGameMode('flagle');
+            }}
+            className={`p-4 sm:p-5 rounded-2xl border-2 transition-all cursor-pointer select-none flex flex-col justify-between gap-3 ${
+              gameMode === 'flagle'
+                ? 'bg-brand-500/10 border-brand-500 shadow-md shadow-brand-500/10 ring-2 ring-brand-500/40'
+                : 'glass-card border-slate-200 dark:border-slate-700 hover:border-brand-300'
+            }`}
+          >
+            <div className="flex items-center justify-between">
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-xl font-bold ${
+                gameMode === 'flagle' ? 'bg-brand-500 text-white shadow-md shadow-brand-500/30' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+              }`}>
+                🧩
+              </div>
+              {gameMode === 'flagle' && <Check className="w-5 h-5 text-brand-500 flex-shrink-0" />}
+            </div>
+            <div>
+              <div className="flex items-center gap-1.5">
+                <h4 className="font-extrabold text-base text-slate-900 dark:text-white">Flagle Reveal</h4>
+                <span className="text-[10px] font-black uppercase px-1.5 py-0.5 rounded-full bg-brand-500/20 text-brand-600 dark:text-brand-300">
+                  Featured
+                </span>
+              </div>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
+                Guess from progressively revealed flag pieces in 6 attempts!
+              </p>
+            </div>
+          </div>
+
           {/* Multiple Choice Card */}
           <div
             onClick={() => {
               SoundEngine.playClick();
               setGameMode('multiple-choice');
             }}
-            className={`p-4 sm:p-5 rounded-2xl border-2 transition-all cursor-pointer select-none flex items-start gap-3.5 ${
+            className={`p-4 sm:p-5 rounded-2xl border-2 transition-all cursor-pointer select-none flex flex-col justify-between gap-3 ${
               gameMode === 'multiple-choice'
                 ? 'bg-brand-500/10 border-brand-500 shadow-md shadow-brand-500/10 ring-2 ring-brand-500/40'
                 : 'glass-card border-slate-200 dark:border-slate-700 hover:border-brand-300'
             }`}
           >
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-xl font-bold ${
-              gameMode === 'multiple-choice' ? 'bg-brand-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
-            }`}>
-              🎴
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center justify-between">
-                <h4 className="font-extrabold text-base text-slate-900 dark:text-white">Multiple Choice</h4>
-                {gameMode === 'multiple-choice' && <Check className="w-4 h-4 text-brand-500 flex-shrink-0" />}
+            <div className="flex items-center justify-between">
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-xl font-bold ${
+                gameMode === 'multiple-choice' ? 'bg-brand-500 text-white shadow-md shadow-brand-500/30' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+              }`}>
+                🎴
               </div>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              {gameMode === 'multiple-choice' && <Check className="w-5 h-5 text-brand-500 flex-shrink-0" />}
+            </div>
+            <div>
+              <h4 className="font-extrabold text-base text-slate-900 dark:text-white">Multiple Choice</h4>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                 Pick from 4 options. Fast, fun, and beginner friendly.
               </p>
             </div>
@@ -106,23 +139,23 @@ export default function GameSetup() {
               SoundEngine.playClick();
               setGameMode('typed');
             }}
-            className={`p-4 sm:p-5 rounded-2xl border-2 transition-all cursor-pointer select-none flex items-start gap-3.5 ${
+            className={`p-4 sm:p-5 rounded-2xl border-2 transition-all cursor-pointer select-none flex flex-col justify-between gap-3 ${
               gameMode === 'typed'
                 ? 'bg-brand-500/10 border-brand-500 shadow-md shadow-brand-500/10 ring-2 ring-brand-500/40'
                 : 'glass-card border-slate-200 dark:border-slate-700 hover:border-brand-300'
             }`}
           >
-            <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-xl font-bold ${
-              gameMode === 'typed' ? 'bg-brand-500 text-white' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
-            }`}>
-              ⌨️
-            </div>
-            <div className="min-w-0 flex-1">
-              <div className="flex items-center justify-between">
-                <h4 className="font-extrabold text-base text-slate-900 dark:text-white">Type the Country</h4>
-                {gameMode === 'typed' && <Check className="w-4 h-4 text-brand-500 flex-shrink-0" />}
+            <div className="flex items-center justify-between">
+              <div className={`w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 text-xl font-bold ${
+                gameMode === 'typed' ? 'bg-brand-500 text-white shadow-md shadow-brand-500/30' : 'bg-slate-100 dark:bg-slate-800 text-slate-700 dark:text-slate-300'
+              }`}>
+                ⌨️
               </div>
-              <p className="text-xs text-slate-500 dark:text-slate-400 mt-0.5">
+              {gameMode === 'typed' && <Check className="w-5 h-5 text-brand-500 flex-shrink-0" />}
+            </div>
+            <div>
+              <h4 className="font-extrabold text-base text-slate-900 dark:text-white">Type the Country</h4>
+              <p className="text-xs text-slate-500 dark:text-slate-400 mt-1">
                 Type the name. Includes smart typo detection & aliases!
               </p>
             </div>

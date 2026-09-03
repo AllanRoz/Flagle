@@ -193,3 +193,42 @@ export function evaluateAnswer(rawInput, targetCountry, allCountries = []) {
     normalizedInput
   };
 }
+
+/**
+ * Finds a country object in allCountries matching input string or aliases
+ */
+export function findCountryByInput(rawInput, allCountries = []) {
+  if (!rawInput) return null;
+  if (typeof rawInput === 'object' && rawInput.code) return rawInput;
+
+  const normalized = normalizeString(rawInput);
+  if (!normalized) return null;
+
+  // 1. Exact primary name match
+  const exact = allCountries.find((c) => normalizeString(c.name) === normalized);
+  if (exact) return exact;
+
+  // 2. Alias match
+  const aliasMatch = allCountries.find((c) => {
+    const names = getNormalizedCountryNames(c);
+    return names.includes(normalized);
+  });
+  if (aliasMatch) return aliasMatch;
+
+  // 3. Closest match with low distance
+  let best = null;
+  let bestDist = Infinity;
+  for (const c of allCountries) {
+    const names = getNormalizedCountryNames(c);
+    for (const name of names) {
+      const dist = damerauLevenshteinDistance(normalized, name);
+      if (dist < bestDist && dist <= 2) {
+        bestDist = dist;
+        best = c;
+      }
+    }
+  }
+
+  return best;
+}
+

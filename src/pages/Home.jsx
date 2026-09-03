@@ -47,11 +47,11 @@ export default function Home() {
           </div>
 
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">
-            FlagGuess <span className="inline-block animate-bounce-subtle">🌎</span>
+            Flagle <span className="inline-block animate-bounce-subtle">🌎</span>
           </h1>
 
           <p className="text-lg sm:text-xl text-slate-600 dark:text-slate-300 font-medium max-w-xl mx-auto">
-            How well do you know the world's flags? Challenge yourself in Multiple Choice or Typed Answer modes!
+            How well do you know the world's flags? Play our featured Progressive Reveal mode, Multiple Choice, or Typed Answer quiz!
           </p>
         </div>
 
@@ -61,11 +61,11 @@ export default function Home() {
             <Button
               variant="primary"
               size="xl"
-              className="w-full sm:w-auto text-lg px-8 py-4 shadow-xl shadow-brand-500/30"
+              className="w-full sm:w-auto text-lg px-8 py-4 shadow-xl shadow-brand-500/30 font-black"
               icon={Play}
               iconPosition="left"
             >
-              Start Playing Now
+              Play Flagle Now
             </Button>
           </Link>
 
@@ -128,17 +128,32 @@ export default function Home() {
       {/* Game Features Grid */}
       <section className="max-w-4xl mx-auto space-y-4">
         <h3 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white text-center">
-          Exciting Features & Modes
+          Exciting Game Modes & Features
         </h3>
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <Card hover className="space-y-2.5 border-2 border-brand-500/30 relative overflow-hidden">
+            <div className="w-10 h-10 rounded-2xl bg-brand-500/10 text-brand-600 dark:text-brand-400 flex items-center justify-center font-bold text-xl">
+              🧩
+            </div>
+            <div className="flex items-center gap-2">
+              <h4 className="font-extrabold text-base text-slate-900 dark:text-white">Progressive Reveal (Flagle)</h4>
+              <span className="text-[10px] font-black uppercase px-1.5 py-0.5 rounded-full bg-brand-500/20 text-brand-600 dark:text-brand-300">
+                New
+              </span>
+            </div>
+            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
+              Guess the country from progressively revealed pieces of its flag! Includes distance, compass direction, and continent clues in 6 attempts.
+            </p>
+          </Card>
+
           <Card hover className="space-y-2.5">
             <div className="w-10 h-10 rounded-2xl bg-blue-500/10 text-blue-600 dark:text-blue-400 flex items-center justify-center font-bold">
               🎴
             </div>
             <h4 className="font-extrabold text-base text-slate-900 dark:text-white">Multiple Choice Mode</h4>
             <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-              Fast-paced 4-option quiz. Use number keys (1, 2, 3, 4) on keyboard for lightning-fast guesses!
+              Fast-paced 4-option quiz. Pick from 4 choices or use number keys (1, 2, 3, 4) on keyboard for rapid-fire rounds!
             </p>
           </Card>
 
@@ -148,17 +163,7 @@ export default function Home() {
             </div>
             <h4 className="font-extrabold text-base text-slate-900 dark:text-white">Smart Typed Answer Mode</h4>
             <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-              Type the country name. Our fuzzy spelling matcher recognizes aliases and prompts "Did you mean...?" for typos!
-            </p>
-          </Card>
-
-          <Card hover className="space-y-2.5">
-            <div className="w-10 h-10 rounded-2xl bg-purple-500/10 text-purple-600 dark:text-purple-400 flex items-center justify-center font-bold">
-              🌍
-            </div>
-            <h4 className="font-extrabold text-base text-slate-900 dark:text-white">Continent Customization</h4>
-            <p className="text-xs sm:text-sm text-slate-500 dark:text-slate-400 leading-relaxed">
-              Practice specific regions (Europe, Asia, Africa, Americas, Oceania) or take on the entire world.
+              Type the country name. Fuzzy spelling matcher recognizes aliases and prompts "Did you mean...?" for typos!
             </p>
           </Card>
         </div>

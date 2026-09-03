@@ -15,6 +15,7 @@ export default function TypedAnswer({ onSubmit, isAnswered, correctCountry }) {
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    e.stopPropagation();
     if (isAnswered || !inputVal.trim()) return;
     onSubmit(inputVal.trim());
   };

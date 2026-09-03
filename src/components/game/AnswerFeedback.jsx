@@ -17,6 +17,8 @@ export default function AnswerFeedback({
   const intervalRef = useRef(null);
   const startTimeRef = useRef(Date.now());
 
+  const [canAdvanceByKeyboard, setCanAdvanceByKeyboard] = useState(false);
+
   const handleAdvance = () => {
     if (intervalRef.current) clearInterval(intervalRef.current);
     if (isLastQuestion && onFinishGame) {
@@ -26,8 +28,19 @@ export default function AnswerFeedback({
     }
   };
 
-  // Keyboard shortcut listener (Space or Enter to skip timer and advance immediately)
+  // Prevent the Enter key that submitted the answer from immediately triggering handleAdvance
   useEffect(() => {
+    setCanAdvanceByKeyboard(false);
+    const timer = setTimeout(() => {
+      setCanAdvanceByKeyboard(true);
+    }, 450);
+    return () => clearTimeout(timer);
+  }, [country?.code, status]);
+
+  // Keyboard shortcut listener (Space or Enter to advance after feedback is visible)
+  useEffect(() => {
+    if (!canAdvanceByKeyboard) return;
+
     const handleKeyDown = (e) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
@@ -36,7 +49,7 @@ export default function AnswerFeedback({
     };
     window.addEventListener('keydown', handleKeyDown);
     return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [onNextQuestion, isLastQuestion, onFinishGame]);
+  }, [canAdvanceByKeyboard, onNextQuestion, isLastQuestion, onFinishGame]);
 
   // Auto-advance timer with smooth countdown bar
   useEffect(() => {

@@ -42,12 +42,16 @@ export default function Statistics() {
     totalQuestionsAnswered > 0 ? Math.round((totalSuccess / totalQuestionsAnswered) * 100) : 0;
 
   // Find favorite game mode
+  const flagleCount = gameModeCount['flagle'] || 0;
   const mcCount = gameModeCount['multiple-choice'] || 0;
   const typedCount = gameModeCount['typed'] || 0;
   let favoriteMode = 'None yet';
-  if (mcCount > typedCount) favoriteMode = 'Multiple Choice';
-  else if (typedCount > mcCount) favoriteMode = 'Type the Country';
-  else if (mcCount > 0 && mcCount === typedCount) favoriteMode = 'Balanced';
+  const maxPlays = Math.max(flagleCount, mcCount, typedCount);
+  if (maxPlays > 0) {
+    if (flagleCount === maxPlays) favoriteMode = 'Flagle Reveal';
+    else if (mcCount === maxPlays) favoriteMode = 'Multiple Choice';
+    else favoriteMode = 'Type the Country';
+  }
 
   // Frequently missed countries (sorted by incorrect count desc)
   const missedCountries = Object.entries(countryStats)
@@ -199,6 +203,13 @@ export default function Statistics() {
             </p>
 
             <div className="space-y-2.5">
+              <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 flex items-center justify-between">
+                <span className="text-xs font-bold text-slate-700 dark:text-slate-300">🧩 Flagle Reveal</span>
+                <span className="text-xs font-extrabold text-slate-900 dark:text-white bg-slate-200 dark:bg-slate-700 px-2 py-0.5 rounded-md">
+                  {flagleCount} games
+                </span>
+              </div>
+
               <div className="p-3 rounded-xl bg-slate-50 dark:bg-slate-800/60 border border-slate-200 dark:border-slate-700/60 flex items-center justify-between">
                 <span className="text-xs font-bold text-slate-700 dark:text-slate-300">🎴 Multiple Choice</span>
                 <span className="text-xs font-extrabold text-slate-900 dark:text-white bg-slate-200 dark:bg-slate-700 px-2 py-0.5 rounded-md">

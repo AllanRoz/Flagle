@@ -52,7 +52,7 @@ export default function App() {
       {/* Footer */}
       <footer className="w-full py-4 border-t border-slate-200/60 dark:border-slate-800/60 text-center text-xs text-slate-400 dark:text-slate-500 select-none">
         <div className="max-w-5xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-2">
-          <span>FlagGuess 🌎 • Test Your World Flag Knowledge</span>
+          <span>Flagle 🌎 • Guess World Flags & Progressive Reveal</span>
           <span className="text-[11px]">100% Client-Side • GitHub Pages Ready</span>
         </div>
       </footer>
